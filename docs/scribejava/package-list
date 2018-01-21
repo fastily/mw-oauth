@@ -1,0 +1,12 @@
+com.github.scribejava.core.builder
+com.github.scribejava.core.builder.api
+com.github.scribejava.core.exceptions
+com.github.scribejava.core.extractors
+com.github.scribejava.core.httpclient
+com.github.scribejava.core.httpclient.jdk
+com.github.scribejava.core.model
+com.github.scribejava.core.oauth
+com.github.scribejava.core.pkce
+com.github.scribejava.core.revoke
+com.github.scribejava.core.services
+com.github.scribejava.core.utils

@@ -1,2 +1,3 @@
-# mw-oauth
-OAuth Library for MediaWiki Clients
+# mw-oauth javadocs
+
+* [scribejava](https://fastily.github.io/mw-oauth/docs/scribejava/)
