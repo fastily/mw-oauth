@@ -7,8 +7,6 @@ import com.github.scribejava.core.model.OAuth1RequestToken;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import com.github.scribejava.httpclient.okhttp.OkHttpHttpClientConfig;
 
-import okhttp3.HttpUrl;
-
 /**
  * A simple interface that allows an app to authenticate via MediaWiki's OAuth 1.0a process.
  * 
@@ -23,21 +21,6 @@ public class MWOAuth
 	public final OAuth10aService service;
 
 	/**
-	 * The ugly base URL. Required because <a href=https://phabricator.wikimedia.org/T74186>T74186</a>.
-	 */
-	private String uglyBaseURL;
-
-	/**
-	 * This is a pretty base URL. Required because <a href=https://phabricator.wikimedia.org/T74186>T74186</a>.
-	 */
-	private String prettyBaseURL;
-
-	/**
-	 * The consumer token/id identifying this OAuth consumer. MediaWiki also refers to this as a "consumer key".
-	 */
-	private String consumerID;
-
-	/**
 	 * The request token obtained from the first step of the OAuth 1.0a process.
 	 */
 	private OAuth1RequestToken requestToken;
@@ -45,7 +28,8 @@ public class MWOAuth
 	/**
 	 * Constructor, creates a new MWOAuth object.
 	 * 
-	 * @param consumerID The consumer token/id/key identifying this OAuth consumer.
+	 * @param consumerID The consumer token/id/key identifying this OAuth consumer. MediaWiki also refers to this as a
+	 *           "consumer key".
 	 * @param clientSecret The secret token obtained from <a
 	 *           href=https://meta.wikimedia.org/wiki/Special:OAuthConsumerRegistration/propose>proposing</a> a new
 	 *           consumer.
@@ -54,13 +38,8 @@ public class MWOAuth
 	 */
 	public MWOAuth(String consumerID, String clientSecret, String hostname)
 	{
-		this.consumerID = consumerID;
-
 		service = new ServiceBuilder(consumerID).apiSecret(clientSecret).httpClientConfig(OkHttpHttpClientConfig.defaultConfig())
-				.build(new API());
-
-		uglyBaseURL = String.format("https://%s/w/index.php?title=Special:OAuth/", hostname);
-		prettyBaseURL = String.format("https://%s/wiki/Special:OAuth/", hostname);
+				.build(new API(hostname, consumerID));
 	}
 
 	/**
@@ -80,21 +59,16 @@ public class MWOAuth
 	}
 
 	/**
-	 * Performs the last 1.5 steps in OAuth 1.0a. Specifically: parse the {@code responseURL} for the
-	 * {@code oauth_verifier} and use this to get an access token from the server.
+	 * Performs the last 1.5 steps in OAuth 1.0a. Specifically: use the {@code oauth_verifier} returned by the server to
+	 * get an access token from the server.
 	 * 
-	 * @param responseURL The response URL obtained from MediaWiki.
+	 * @param oauthVerifier The {@code oauth_verifier} parameter value returned in the URL from the server (assuming
+	 *           successful authentication)
 	 * @return The OAuth access token, or null on error/user deny.
 	 * @throws Throwable Network error
 	 */
-	public OAuth1AccessToken getAccessToken(String responseURL) throws Throwable
+	public OAuth1AccessToken getAccessToken(String oauthVerifier) throws Throwable
 	{
-		HttpUrl u = HttpUrl.parse(responseURL);
-
-		String oauthVerifier = u.queryParameter("oauth_verifier");
-		if (oauthVerifier == null)
-			return null;
-
 		OAuth1AccessToken accessToken = service.getAccessToken(requestToken, oauthVerifier);
 		System.out.println(accessToken.getRawResponse());
 
@@ -109,6 +83,35 @@ public class MWOAuth
 	 */
 	private class API extends DefaultApi10a
 	{
+		/**
+		 * The consumer token/id identifying this OAuth consumer.
+		 */
+		private String consumerID;
+
+		/**
+		 * The ugly base URL. Required because <a href=https://phabricator.wikimedia.org/T74186>T74186</a>.
+		 */
+		private String uglyBaseURL;
+
+		/**
+		 * This is a pretty base URL. Required because <a href=https://phabricator.wikimedia.org/T74186>T74186</a>.
+		 */
+		private String prettyBaseURL;
+
+		/**
+		 * Constructor, creates a new API object.
+		 * 
+		 * @param hostname The hostname of the Wiki to interface with.
+		 * @param consumerID The consumer token/id identifying this OAuth consumer.
+		 */
+		private API(String hostname, String consumerID)
+		{
+			this.consumerID = consumerID;
+
+			uglyBaseURL = String.format("https://%s/w/index.php?title=Special:OAuth/", hostname);
+			prettyBaseURL = String.format("https://%s/wiki/Special:OAuth/", hostname);
+		}
+
 		/**
 		 * Produces the request token endpoint. This is used for step 1 of the OAuth 1.0a process.
 		 */

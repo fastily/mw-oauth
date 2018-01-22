@@ -1,4 +1,78 @@
 apply plugin: 'java-library'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+version="0.0.1"
+description="${project.name} build script"
+group="fastily"
+
+def pomConfig = {
+    inceptionYear '2018'
+    licenses {
+        license {
+            name 'GNU General Public License, Version 3.0'
+            url 'https://www.gnu.org/licenses/gpl-3.0.txt'
+            distribution 'repo'
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom.withXml {
+                asNode().children().last() + pomConfig
+            }
+
+            artifact sourceJar
+            artifact packageJavadoc
+        }
+    }
+}
+
+task writeNewPom {
+    doLast {
+        pom {
+            project {
+                inceptionYear '2018'
+                licenses {
+                    license {
+                        name 'GNU General Public License, Version 3.0'
+                        url 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                        distribution 'repo'
+                    }
+                }
+            }
+        } .writeTo("$buildDir/${project.name}-${version}.pom")
+    }
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+
+    options {
+        setMemberLevel JavadocMemberLevel.PUBLIC
+        setAuthor true
+
+        links "https://docs.oracle.com/javase/8/docs/api/"
+        links "https://fastily.github.io/mw-oauth/docs/scribejava/"
+
+        // setOutputLevel JavadocOutputLevel.VERBOSE
+    }
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+task packageJavadoc(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
 
 repositories {
     jcenter()
