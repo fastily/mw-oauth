@@ -86,7 +86,7 @@ dependencies {
     implementation 'com.github.scribejava:scribejava-httpclient-okhttp:5.1.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     
-    // api 'fastily:jwiki:1.5.1'
+//    api 'fastily:jwiki:1.5.1'
 }
 
 task wrapper(type: Wrapper) {

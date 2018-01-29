@@ -39,7 +39,7 @@ public class MWOAuth
 	public MWOAuth(String consumerID, String clientSecret, String hostname)
 	{
 		service = new ServiceBuilder(consumerID).apiSecret(clientSecret).httpClientConfig(OkHttpHttpClientConfig.defaultConfig())
-				.debug().build(new API(hostname, consumerID));
+				.build(new API(hostname, consumerID));
 	}
 
 	/**
