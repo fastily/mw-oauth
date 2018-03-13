@@ -139,5 +139,14 @@ public class MWOAuth
 		{
 			return uglyBaseURL + "token";
 		}
+
+		/**
+		 * Disabled/Throws UnsupportedOperationException. MediaWiki uses 2 different base URLs.
+		 */
+		@Override
+		protected String getAuthorizationBaseUrl()
+		{
+			throw new UnsupportedOperationException("");
+		}
 	}
 }

@@ -80,10 +80,10 @@ repositories {
 }
 
 dependencies {
-    api 'com.github.scribejava:scribejava-core:5.1.0'
+    api 'com.github.scribejava:scribejava-core:5.3.0'
 
-    api "com.squareup.okhttp3:okhttp:3.9.1"
-    implementation 'com.github.scribejava:scribejava-httpclient-okhttp:5.1.0'
+    api "com.squareup.okhttp3:okhttp:3.10.0"
+    implementation 'com.github.scribejava:scribejava-httpclient-okhttp:5.3.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     
 //    api 'fastily:jwiki:1.5.1'
