@@ -1,7 +1,9 @@
-apply plugin: 'java-library'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'eclipse'
+plugins {
+    id 'java-library'
+    id 'maven'
+    id 'maven-publish'
+    id 'eclipse'
+}
 
 version="0.0.1"
 description="${project.name} build script"
@@ -85,11 +87,11 @@ dependencies {
 
     api "com.squareup.okhttp3:okhttp:3.10.0"
     implementation 'com.github.scribejava:scribejava-httpclient-okhttp:5.3.0'
-    implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.google.code.gson:gson:2.8.5'
     
 //    api 'fastily:jwiki:1.6.1'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+wrapper {
+    gradleVersion = '4.8'
 }
